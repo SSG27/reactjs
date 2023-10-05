@@ -1,24 +1,28 @@
+// importing libraries
 import { useState, useEffect  } from 'react';
 import ReactDOM from 'react-dom/client';
 import React from 'react';
 import axios from 'axios';
+// importing files
 import logo from './cinema projector.png'
-
 import './App.css';
+// main function
 
 function App() {
   const [inputs, setInputs] = useState({});
   const [responseData, setResponseData] = useState(null);
-
+  const [error, setError] = useState(null);
+  
+  // function sets inputs to variables
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
     setInputs(values => ({...values, [name]: value}));
   }
-
+  // function to init preventDefault
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  // api
   const options = {
     method: 'GET',
     url: 'https://streaming-availability.p.rapidapi.com/search/title',
@@ -33,15 +37,18 @@ function App() {
       'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com'
     }
   };
+  
 
   try {
     const response = await axios.request(options);
     setResponseData(response.data);
+    setError(null);
   } catch (error) {
     console.error(error);
+    setError("An error occured");
   }
 }
-
+  // what is displayed on screen
 	return (
     <section
     style={{
@@ -54,6 +61,7 @@ function App() {
       padding: "0 2em"
     }}
   >
+    {/* some inline css */}
     <div
       style={{
         textAlign: "center",
@@ -84,6 +92,7 @@ function App() {
             color: "#FFF842",
           }}
         >
+        {/* text on screen */}
           Your one stop search for movies to watch.
         </p>
       </div>
@@ -99,6 +108,7 @@ function App() {
         <span style={{ fontWeight: 400 }}> · Sanju Ghandhi</span>
       </p>
     </div>
+    {/* input fields as a form */}
     <form onSubmit={handleSubmit}>
       <br></br>
       <label>Enter the movie title: 
@@ -117,6 +127,7 @@ function App() {
         />
       </label>
       <br></br>
+      {/* creates submit button */}
       <input type="submit" />
     </form>
 
@@ -124,6 +135,7 @@ function App() {
     {responseData && (
   <div>
     <h2>Available Media:</h2>
+    {/* creates table to format the api response in a neat manner */}
     <table class="container">
       <thead>
         <tr>
@@ -138,6 +150,7 @@ function App() {
         </tr>
       </thead>
       <tbody>
+        {/* used mapping function to to display similar objects of a component */}
         {responseData.result.map((item, index) => (
           <React.Fragment key={index}>
             {item.streamingInfo.gb ? (
