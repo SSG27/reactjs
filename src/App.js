@@ -1,6 +1,8 @@
 import { useState, useEffect  } from 'react';
 import ReactDOM from 'react-dom/client';
+import React from 'react';
 import axios from 'axios';
+import logo from './cinema projector.png'
 
 import './App.css';
 
@@ -47,8 +49,8 @@ function App() {
       fontSize: "1rem",
       fontWeight: 1.5,
       lineHeight: 1.5,
-      color: "#292b2c",
-      backgroundColor: "#fff",
+      color: "#fff",
+      backgroundColor: "#1F2739",
       padding: "0 2em"
     }}
   >
@@ -58,17 +60,16 @@ function App() {
         maxWidth: "950px",
         margin: "0 auto",
         border: "1px solid #e6e6e6",
-        padding: "40px 25px",
+        padding: "45px 25px 50px 25px",
         marginTop: "50px"
       }}
     >
       <img
-        src="https://www.pngmart.com/files/5/Movie-PNG-Transparent-Image.png"
-        alt="Tammy Stevens"
+        src={logo}
+        alt=""
         style={{
           margin: "-90px auto 30px",
           width: "100px",
-          borderRadius: "50%",
           objectFit: "cover",
           marginBottom: "0"
         }}
@@ -79,7 +80,8 @@ function App() {
             lineHeight: 1.5,
             fontWeight: 300,
             marginBottom: "25px",
-            fontSize: "1.375rem"
+            fontSize: "1.375rem",
+            color: "#FFF842",
           }}
         >
           Your one stop search for movies to watch.
@@ -89,7 +91,8 @@ function App() {
         style={{
           marginBottom: "0",
           fontWeight: 600,
-          fontSize: "1rem"
+          fontSize: "1rem",
+          color: "#FB667A",
         }}
       >
         Made By
@@ -106,7 +109,7 @@ function App() {
         />
       </label>
       <br></br>
-      <label>Enter the two letter country code (e.g UK): 
+      <label>Enter the two letter country code (e.g gb): 
         <input type="text" 
         name = "moviecountry"
         value={inputs.moviecountry || ""} 
@@ -119,11 +122,51 @@ function App() {
 
     {/* Display the API response */}
     {responseData && (
-        <div>
-          <h2>API Response:</h2>
-          <pre>{JSON.stringify(responseData, null, 2)}</pre>
-        </div>
-      )}
+  <div>
+    <h2>Available Media:</h2>
+    <table class="container">
+      <thead>
+        <tr>
+          <th><h1>Type</h1></th>
+          <th><h1>Title</h1></th>
+          <th><h1>Service</h1></th>
+          <th><h1>Streaming</h1></th>
+          <th><h1>Quality</h1></th>
+          <th><h1>Audio languages</h1></th>
+          <th><h1>Subtitles</h1></th>
+          <th><h1>Price</h1></th>
+        </tr>
+      </thead>
+      <tbody>
+        {responseData.result.map((item, index) => (
+          <React.Fragment key={index}>
+            {item.streamingInfo.gb ? (
+              item.streamingInfo.gb.map((stream, streamIndex) => (
+                <tr key={streamIndex}>
+                  <td>{item.type}</td>
+                  <td>{item.title}</td>
+                  <td>{stream.service}</td>
+                  <td>{stream.streamingType}</td>
+                  <td>{stream.quality}</td>
+                  <td>{stream.audios.map((audio) => audio.language).join(', ')}</td>
+                  <td>{stream.subtitles.map((subtitle) => subtitle.locale.language).join(', ')}</td>
+                  <td>{stream.price ? stream.price.formatted : 'N/A'}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td>{item.type}</td>
+                <td>{item.title}</td>
+                <td colSpan="6">No streaming info available</td>
+              </tr>
+            )}
+          </React.Fragment>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
     </section>
 	);
 }
