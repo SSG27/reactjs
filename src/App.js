@@ -11,7 +11,7 @@ import './App.css';
 function App() {
   const [inputs, setInputs] = useState({});
   const [responseData, setResponseData] = useState(null);
-  const [error, setError] = useState(null);
+  const [myError, setError] = useState(null);
   
   // function sets inputs to variables
   const handleChange = (event) => {
@@ -43,8 +43,9 @@ function App() {
     const response = await axios.request(options);
     setResponseData(response.data);
     setError(null);
-  } catch (error) {
-    console.error(error);
+  } catch (myError) {
+    console.error(myError);
+    alert("Error: Bad input \nPlease enter a valid movie title and counrty code");
     setError("An error occured");
   }
 }
